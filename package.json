@@ -1,0 +1,24 @@
+{
+  "name": "nyumba-book",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stackpillar/nyumba-book.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/stackpillar/nyumba-book/issues"
+  },
+  "homepage": "https://github.com/stackpillar/nyumba-book#readme",
+  "devDependencies": {
+    "wrangler": "^4.129.1"
+  }
+}
