@@ -312,7 +312,7 @@ async function loadProperties(){
     // bnb_properties.slug (text) — add these columns to enable public booking.
     // Falls back gracefully if the column doesn't exist yet so this page never hard-fails.
     let query = db.from('bnb_properties')
-      .select('id, property_label, nightly_rate, notes, listing_id, is_publicly_bookable, max_guests, listings(area, listing_photos(url,is_cover))')
+      .select('id, property_label, description, nightly_rate, notes, photos, listing_id, is_publicly_bookable, max_guests, listings(area, listing_photos(url,is_cover))')
       .eq('is_publicly_bookable', true)
       .order('created_at',{ascending:false});
     let { data, error } = await query;
@@ -322,17 +322,19 @@ async function loadProperties(){
       return;
     }
     allProperties = (data||[]).map(row=>{
-      const photos=(row.listings?.listing_photos||[]).sort((a,b)=>(b.is_cover?1:0)-(a.is_cover?1:0)).map(p=>p.url);
+      const linkedPhotos=(row.listings?.listing_photos||[]).sort((a,b)=>(b.is_cover?1:0)-(a.is_cover?1:0)).map(p=>p.url);
+      const photos = linkedPhotos.length ? linkedPhotos : (Array.isArray(row.photos)?row.photos:[]);
       return {
         id: row.id,
         property_label: row.property_label,
+        description: row.description||'',
         nightly_rate: row.nightly_rate,
         area: row.listings?.area||'',
         max_guests: row.max_guests||null,
         photos,
         verified: true,
       };
-    });
+    }).filter(p=>p.photos.length>0); // never show a stay with no photos
     const areas=[...new Set(allProperties.map(p=>p.area).filter(Boolean))].sort();
     const areaList=document.getElementById('area-options');
     areaList.innerHTML=areas.map(a=>`<option value="${escHtml(a)}"></option>`).join('');
